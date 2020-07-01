@@ -1,0 +1,8 @@
+DEFINE a 4
+POP
+PUSH a
+PUSH a
+SQRT
+*
+/
+PRINT

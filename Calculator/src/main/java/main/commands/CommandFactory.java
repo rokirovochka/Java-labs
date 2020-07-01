@@ -42,7 +42,7 @@ public class CommandFactory {
         try {
             return (Command) Class.forName(this.getClass().getPackageName() + "." + commandsNames.get(name)).getDeclaredConstructor(String.class).newInstance(args.isEmpty() ? null : args);
         } catch (Exception ex) {
-            System.out.println(ex.toString());
+            System.out.print(ex.getCause());
         }
         return null;
     }

@@ -1,0 +1,3 @@
+not enough operands in stack for POP command: expected 1. found 0
+not enough operands in stack for Division command: expected 2. found 1
+8.0

@@ -26,7 +26,7 @@ public class Subtraction implements Command {
         Double operand2 = correctPattern.matcher(v2).matches() ? Double.valueOf(v2) : data.getVariables().get(v2);
         if (operand1 == null || operand2 == null)
             throw new IncorrectArgument("incorrect argument for Subtraction command");
-        double result = operand2 - operand1;
+        double result = operand1 - operand2;
         if (!Double.isFinite(result))
             throw new IncorrectResult("incorrect result if execute Subtraction command with args" + operand1 + " " + operand2);
         data.getOperands().push(Double.toString(result));

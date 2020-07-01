@@ -31,8 +31,9 @@ public class Calculator {
             if (line.charAt(0) == '#') continue;
             String[] splittedLine = line.split("[ \n]", 2);
             Command command = factory.getCommand(splittedLine[0], splittedLine.length == 1 ? "" : splittedLine[1]);
+
             if (command == null) {
-                System.out.println("unknown command");
+                System.out.println(": " + splittedLine[0] + " is unknown command");
                 continue;
             }
             try {

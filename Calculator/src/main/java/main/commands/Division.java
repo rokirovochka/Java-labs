@@ -23,8 +23,8 @@ public class Division implements Command {
         Double operand2 = correctPattern.matcher(v2).matches() ? Double.valueOf(v2) : data.getVariables().get(v2);
         if (operand1 == null || operand2 == null)
             throw new IncorrectArgument("incorrect argument for Division command");
-        Double result = operand2 / operand1;
-        if (operand1 == 0.0)
+        Double result = operand1 / operand2;
+        if (operand2 == 0.0)
             throw new DivisionByZero();
         if (!Double.isFinite(result))
             throw new IncorrectResult("incorrect result if execute Division command with args" + operand1 + " " + operand2);

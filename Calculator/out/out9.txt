@@ -1,0 +1,3 @@
+main.calcExceptions.WrongNumberOfArguments: wrong number of arguments in command Define.
+expected 2. found 1: DEFINE is unknown command
+a == 4.0

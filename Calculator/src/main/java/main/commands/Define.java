@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class Define implements Command {
 
-    public Define(String args) {
+    public Define(String args) throws WrongNumberOfArguments {
         this.args = args == null ? null : args.split(" ");
         int cnt = this.args == null ? 0 : this.args.length;
         if (cnt != 2)

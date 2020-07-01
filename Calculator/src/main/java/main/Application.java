@@ -1,5 +1,6 @@
 package main;
 
+
 public class Application {
     private static final int INPUTFILE_ARGUMENT = 0;
 

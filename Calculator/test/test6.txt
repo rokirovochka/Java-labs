@@ -1,0 +1,10 @@
+DEFINE a 4
+PUSH a
+DEFINE b 12
+PUSH b
+*
+#this is a comment nvm tho
+PUSH a
+/
+PRINT
+#this is a comment also
