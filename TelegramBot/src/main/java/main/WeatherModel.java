@@ -1,6 +1,8 @@
+package main;
+
 public class WeatherModel {
 
-    private static String cityByDefault = Constants.cityByDefault;
+    private static String cityByDefault = Constants.CITY_BY_DEFAULT;
 
     private String name;
     private Double temp;

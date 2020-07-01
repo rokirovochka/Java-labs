@@ -1,3 +1,6 @@
+package main;
+
+import main.commands.*;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -10,13 +13,16 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Bot extends TelegramLongPollingBot {
+
     public static void main(String[] args) {
         ApiContextInitializer.init();
+        initCommandsMap();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
             telegramBotsApi.registerBot(new Bot());
@@ -54,36 +60,10 @@ public class Bot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         String text;
         if (message != null && message.hasText()) {
-            switch (getFirstWord(message.getText())) {
-                case Constants.dateCheckText:
-                    text = DateService.getDate();
-                    break;
-                case Constants.timeCheckText:
-                    text = DateService.getTime();
-                    break;
-                case Constants.locationCheckText:
-                    try {
-                        WeatherService.getWeather(message.getText().replace(Constants.locationCheckText, ""), weatherModel);
-                        text = Constants.locationHasChanged;
-                        WeatherModel.setCityByDefault(message.getText().replace(Constants.locationCheckText, "").replace(" ", ""));
-                    } catch (IOException e) {
-                        text = Constants.locationHasntChanged;
-                    }
-                    break;
-                case Constants.translateCheckText:
-                    text = TranslateService.getTranslatedText(message.getText().replace(Constants.translateCheckText, ""));
-                    break;
-                case Constants.weatherCheckText:
-                    try {
-                        text = WeatherService.getWeather(message.getText(), weatherModel);
-                    } catch (IOException e) {
-                        text = Constants.cityNotFound;
-                    }
-                    break;
-                default:
-                    text = Constants.helpMessageText;
-                    break;
-            }
+            if (!commands.containsKey(getFirstWord(message.getText())))
+                text = Constants.HELP_MESSAGE_TEXT;
+            else
+                text = commands.get(getFirstWord(message.getText())).execute(message, weatherModel);
             sendMsg(message, text);
         }
     }
@@ -97,24 +77,34 @@ public class Bot extends TelegramLongPollingBot {
 
         List<KeyboardRow> keyboardRowList = new ArrayList<>();
         KeyboardRow keyboardFirstRow = new KeyboardRow();
-        keyboardFirstRow.add(new KeyboardButton(Constants.helpButtonText));
-        keyboardFirstRow.add(new KeyboardButton(Constants.dateButtonText));
-        keyboardFirstRow.add(new KeyboardButton(Constants.timeButtonText));
-        keyboardFirstRow.add(new KeyboardButton(Constants.weatherButtonText));
+        keyboardFirstRow.add(new KeyboardButton(Constants.HELP_BUTTON_TEXT));
+        keyboardFirstRow.add(new KeyboardButton(Constants.DATE_BUTTON_TEXT));
+        keyboardFirstRow.add(new KeyboardButton(Constants.TIME_BUTTON_TEXT));
+        keyboardFirstRow.add(new KeyboardButton(Constants.WEATHER_BUTTON_TEXT));
 
         keyboardRowList.add(keyboardFirstRow);
         replyKeyboardMarkup.setKeyboard(keyboardRowList);
     }
 
     public String getBotUsername() {
-        return botUsername;
+        return BOT_USERNAME;
     }
 
     public String getBotToken() {
-        return botToken;
+        return BOT_TOKEN;
     }
 
-    private static final String botUsername = "rokirovochkaBot";
-    private static final String botToken = "1233354824:AAFMUH8DNFKjiOJoPHLU_UDSJYF79Yht0cc";
+    public static void initCommandsMap() {
+        commands = new HashMap<>();
+        commands.put(Constants.DATE_CHECK_TEXT, new DateCommand());
+        commands.put(Constants.HELP_CHECK_TEXT, new HelpCommand());
+        commands.put(Constants.LOCATION_CHECK_TEXT, new LocationCommand());
+        commands.put(Constants.TIME_CHECK_TEXT, new TimeCommand());
+        commands.put(Constants.TRANSLATE_CHECK_TEXT, new TranslateCommand());
+        commands.put(Constants.WEATHER_CHECK_TEXT, new WeatherCommand());
+    }
 
+    private static final String BOT_USERNAME = "rokirovochkaBot";
+    private static final String BOT_TOKEN = "1233354824:AAFMUH8DNFKjiOJoPHLU_UDSJYF79Yht0cc";
+    private static Map<String, Command> commands;
 }
