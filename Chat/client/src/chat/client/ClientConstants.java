@@ -1,7 +1,7 @@
 package chat.client;
 
 public class ClientConstants {
-    public static final String IP_ADDR = "192.168.0.100";
+    public static final String IP_ADDR = "127.0.0.1";
     public static final int PORT = 1337;
     public static final int WIDTH = 700;
     public static final int HEIGHT = 500;

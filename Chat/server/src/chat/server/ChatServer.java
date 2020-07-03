@@ -17,7 +17,7 @@ public class ChatServer implements TCPConnectionObserver {
 
     private static Logger log = Logger.getLogger(ChatServer.class.getName());
 
-    private final ArrayList<ClientHandler> clients = new ArrayList<>();
+    private final ArrayList<ClientInfo> clients = new ArrayList<>();
     private ArrayList<Message> history = new ArrayList<>();
 
     private ChatServer() {
@@ -54,9 +54,9 @@ public class ChatServer implements TCPConnectionObserver {
 
     @Override
     public synchronized void onConnectionReady(TCPConnection tcpConnection) {
-        ClientHandler clientHandler = new ClientHandler(tcpConnection);
+        ClientInfo clientHandler = new ClientInfo(tcpConnection);
         clients.add(clientHandler);
-        clientHandler.setNickname(ClientHandler.DEFAULT_NICKNAME + clients.size());
+        clientHandler.setNickname(ClientInfo.DEFAULT_NICKNAME + clients.size());
         sendToAllConnections(new Message(getUserNicknames(), MessageType.TYPE_NICKNAME));
 
         if (!getHistoryMessagesText().isEmpty()) tcpConnection.sendMessage(new Message(getHistoryMessagesText()));

@@ -1,6 +1,7 @@
 package network;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -15,6 +16,7 @@ public class TCPConnection {
     private ObjectOutputStream out;
 
     private UUID id;
+    private Boolean alreadyReading = false;
 
     private static ScheduledThreadPoolExecutor executorService;
     private Runnable task;
@@ -31,13 +33,19 @@ public class TCPConnection {
         this.eventObserver = eventObserver;
         this.socket = socket;
         out = new ObjectOutputStream(socket.getOutputStream());
-        in = new ObjectInputStream(socket.getInputStream());
+
+        InputStream socketInputStream = socket.getInputStream();
+        in = new ObjectInputStream(socketInputStream);
 
         eventObserver.onConnectionReady(TCPConnection.this);
         Runnable task = new Runnable() {
             @Override
             public void run() {
                 try {
+                    if (socketInputStream.available() == 0 || alreadyReading == true)
+                        return;
+                    alreadyReading = true;
+
                     Message msg = (Message) in.readObject();
                     if (msg.getType() == MessageType.TYPE_MESSAGE)
                         eventObserver.onReceiveMessage(TCPConnection.this, msg);
@@ -48,7 +56,9 @@ public class TCPConnection {
                 } catch (Exception e) {
                     eventObserver.onException(TCPConnection.this, e);
                 }
+                alreadyReading = false;
             }
+
         };
         executorService.scheduleWithFixedDelay(task, NetworkConstants.INITIAL_DELAY, NetworkConstants.DELAY, NetworkConstants.TIME_UNIT);
     }
@@ -65,8 +75,8 @@ public class TCPConnection {
 
     public synchronized void disconnect() {
         try {
-            socket.close();
             executorService.remove(task);
+            socket.close();
         } catch (IOException e) {
             eventObserver.onException(TCPConnection.this, e);
         }

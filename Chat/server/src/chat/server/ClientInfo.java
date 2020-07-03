@@ -4,13 +4,13 @@ import network.TCPConnection;
 
 import java.util.UUID;
 
-public class ClientHandler {
+public class ClientInfo {
 
     private final TCPConnection tcpConnection;
     private final UUID id;
     private String nickname;
 
-    public ClientHandler(TCPConnection tcpConnection) {
+    public ClientInfo(TCPConnection tcpConnection) {
         this.tcpConnection = tcpConnection;
         id = UUID.randomUUID();
         nickname = DEFAULT_NICKNAME;
