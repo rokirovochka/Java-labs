@@ -7,13 +7,12 @@ public class ClientConstants {
     public static final int HEIGHT = 500;
 
     public static final String NAME_OF_CHAT = "Chat";
-    public static final String DEFAULT_NICKNAME = "user";
     public static final String DISCONNECT_BUTTON = "Disconnect";
     public static final String STATUS_WHEN_DISCONNECT = "Disconnecting";
     public static final String CONNECTION_E = "Connection exception: ";
     public static final String SEPARATOR = ": ";
-    public static final String CONNECTION_READY = "Connection ready...";
-    public static final String CONNECTIONE_CLOSE = "Connection close...";
+    public static final String CONNECTION_READY = "***Connection ready***";
+    public static final String CONNECTIONE_CLOSE = "***Connection close***";
 
     public static final int EXIT_SUCCESS = 0;
 }

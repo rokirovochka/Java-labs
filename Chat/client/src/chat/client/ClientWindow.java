@@ -23,45 +23,52 @@ public class ClientWindow extends JFrame implements ActionListener, TCPConnectio
     }
 
     private final JTextArea log = new JTextArea();
-    private final JTextField fieldNickname = new JTextField(ClientConstants.DEFAULT_NICKNAME);
+    private final JTextField fieldNickname = new JTextField();
     private final JTextField fieldInput = new JTextField();
     private final JButton disconnectButton = new JButton(ClientConstants.DISCONNECT_BUTTON);
 
     private DefaultListModel<String> dlm = new DefaultListModel<String>();
     private JList listOfNicknames = new JList<String>(dlm);
-
+    private static Boolean firstTime = true;
 
     private TCPConnection connection;
 
     private ClientWindow() {
+        setWindow();
+        setTextArea();
+        setLayouts();
+
+        setupActionListeners();
+
+        setVisible(true);
+        try {
+            connection = new TCPConnection(this, ClientConstants.IP_ADDR, ClientConstants.PORT);
+        } catch (IOException e) {
+            printMessage(new Message(ClientConstants.CONNECTION_E + e));
+        }
+    }
+
+    private void setWindow() {
         setTitle(ClientConstants.NAME_OF_CHAT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(ClientConstants.WIDTH, ClientConstants.HEIGHT);
         setLocationRelativeTo(null);
         setAlwaysOnTop(true);
+    }
 
+    private void setTextArea() {
         log.setEditable(false);
         log.setLineWrap(true);
         add(log, BorderLayout.CENTER);
+    }
 
-        fieldInput.addActionListener(this);
+    private void setLayouts() {
         add(fieldInput, BorderLayout.SOUTH);
         add(fieldNickname, BorderLayout.NORTH);
         add(listOfNicknames, BorderLayout.WEST);
         listOfNicknames.setLayoutOrientation(JList.VERTICAL);
 
         add(disconnectButton, BorderLayout.EAST);
-        setupActionListeners();
-
-        setVisible(true);
-
-
-        try {
-            connection = new TCPConnection(this, ClientConstants.IP_ADDR, ClientConstants.PORT);
-        } catch (IOException e) {
-            printMessage(new Message(ClientConstants.CONNECTION_E + e));
-        }
-
     }
 
     @Override
@@ -73,6 +80,7 @@ public class ClientWindow extends JFrame implements ActionListener, TCPConnectio
     }
 
     public void setupActionListeners() {
+        fieldInput.addActionListener(this);
         disconnectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -103,8 +111,6 @@ public class ClientWindow extends JFrame implements ActionListener, TCPConnectio
         printMessage(new Message(ClientConstants.CONNECTIONE_CLOSE));
     }
 
-    private static Boolean ftime = true;
-
     @Override
     public void onInformation(TCPConnection tcpConnection, Message message) {
         String[] nicknames = message.getData().split(ENDL);
@@ -115,9 +121,9 @@ public class ClientWindow extends JFrame implements ActionListener, TCPConnectio
         for (int i = dlm.size(); i < nicknames.length; i++) {
             dlm.addElement(nicknames[i]);
         }
-        if (ftime) {
+        if (firstTime) {
             fieldNickname.setText(dlm.getElementAt(dlm.size() - 1));
-            ftime = false;
+            firstTime = false;
         }
     }
 

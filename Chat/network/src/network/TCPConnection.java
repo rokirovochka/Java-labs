@@ -6,8 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.UUID;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class TCPConnection {
@@ -18,7 +16,6 @@ public class TCPConnection {
 
     private UUID id;
 
-   // private static ScheduledExecutorService executorService;
     private static ScheduledThreadPoolExecutor executorService;
     private Runnable task;
 
@@ -29,8 +26,8 @@ public class TCPConnection {
 
     public TCPConnection(TCPConnectionObserver eventObserver, Socket socket) throws IOException {
         id = UUID.randomUUID();
-        executorService= (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(NetworkConstants.AMOUNT_OF_THREADS);
-        //executorService = Executors.newScheduledThreadPool(NetworkConstants.AMOUNT_OF_THREADS);
+        executorService = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(NetworkConstants.AMOUNT_OF_THREADS);
+
         this.eventObserver = eventObserver;
         this.socket = socket;
         out = new ObjectOutputStream(socket.getOutputStream());
@@ -53,7 +50,7 @@ public class TCPConnection {
                 }
             }
         };
-        executorService.scheduleWithFixedDelay(task,NetworkConstants.INITIAL_DELAY,NetworkConstants.DELAY,NetworkConstants.TIME_UNIT);
+        executorService.scheduleWithFixedDelay(task, NetworkConstants.INITIAL_DELAY, NetworkConstants.DELAY, NetworkConstants.TIME_UNIT);
     }
 
     public synchronized void sendMessage(Message message) {
