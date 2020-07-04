@@ -18,7 +18,7 @@ public class TCPConnection {
     private UUID id;
     private Boolean alreadyReading = false;
 
-    private static ScheduledThreadPoolExecutor executorService;
+    private static ScheduledThreadPoolExecutor executorService = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(NetworkConstants.AMOUNT_OF_THREADS);
     private Runnable task;
 
 
@@ -28,7 +28,6 @@ public class TCPConnection {
 
     public TCPConnection(TCPConnectionObserver eventObserver, Socket socket) throws IOException {
         id = UUID.randomUUID();
-        executorService = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(NetworkConstants.AMOUNT_OF_THREADS);
 
         this.eventObserver = eventObserver;
         this.socket = socket;
